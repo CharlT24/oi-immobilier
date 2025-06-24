@@ -1,46 +1,7 @@
 <?php
-// 📄 single-bien.php — Fiche bien synchronisée avec le CRM
+// 📄 single-bien.php — Fiche bien moderne style Apple
 get_header();
-?>
 
-<style>
-.dpe-ges-container {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2.5rem;
-  flex-wrap: wrap;
-}
-.dpe-scale, .ges-scale {
-  flex: 1 1 300px;
-}
-.dpe-bar, .ges-bar {
-  position: relative;
-  height: 28px;
-  line-height: 28px;
-  font-weight: bold;
-  color: white;
-  padding-left: 10px;
-  margin-bottom: 6px;
-  border-radius: 4px;
-}
-.dpe-bar span, .ges-bar span {
-  position: absolute;
-  right: 10px;
-}
-.dpe-selected::after, .ges-selected::after {
-  content: '';
-  position: absolute;
-  right: -12px;
-  top: 8px;
-  width: 0;
-  height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 12px solid black;
-}
-</style>
-
-<?php
 $post_id = get_the_ID();
 $titre = get_the_title();
 $prix = get_post_meta($post_id, 'prix_vente', true);
@@ -92,75 +53,8 @@ $dpe_conso = get_post_meta($post_id, 'dpe_conso_indice', true);
 $dpe_ges = get_post_meta($post_id, 'dpe_ges_indice', true);
 $dpe_min = get_post_meta($post_id, 'dpe_cout_min', true);
 $dpe_max = get_post_meta($post_id, 'dpe_cout_max', true);
-$dpe_classes = ['A' => '#2ECC71', 'B' => '#A9DFBF', 'C' => '#F7DC6F', 'D' => '#F5B041', 'E' => '#EB984E', 'F' => '#DC7633', 'G' => '#A93226'];
-?>
 
-
-<div style="max-width: 1100px; margin: auto; padding: 3rem 1rem; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">
-  <h1 style="font-size: 2.2rem; font-weight: bold; margin-bottom: 0.5rem;">🏡 <?php echo esc_html($titre); ?></h1>
-  <p style="font-size: 1rem; color: #666; margin-bottom: 1rem;">
-    <?php echo esc_html($surface); ?> m² — <?php echo number_format((float)$prix, 0, ',', ' '); ?> € — <?php echo esc_html("$ville $code_postal"); ?>
-  </p>
-
-  <div class="swiper" style="border-radius: 16px; overflow: hidden; margin-bottom: 2rem;">
-    <div class="swiper-wrapper">
-      <div class="swiper-slide">
-        <img src="<?php echo esc_url($cover_url); ?>" style="width: 100%; height: 500px; object-fit: cover;" onerror="this.src='<?php echo get_template_directory_uri(); ?>/assets/no-photo.png'" />
-      </div>
-      <?php if ($gallery && is_array($gallery)) : ?>
-        <?php foreach ($gallery as $image): ?>
-          <div class="swiper-slide">
-            <img src="https://fkavtsofmglifzalclyn.supabase.co/storage/v1/object/public/photos/gallery/<?php echo esc_attr($supabase_id); ?>/<?php echo esc_attr($image); ?>" style="width: 100%; height: 500px; object-fit: cover;" onerror="this.src='<?php echo get_template_directory_uri(); ?>/assets/no-photo.png'" />
-          </div>
-        <?php endforeach; ?>
-      <?php endif; ?>
-    </div>
-    <div class="swiper-pagination"></div>
-    <div class="swiper-button-prev"></div>
-    <div class="swiper-button-next"></div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-  <script>
-    new Swiper('.swiper', {
-      loop: true,
-      pagination: { el: '.swiper-pagination', clickable: true },
-      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' }
-    });
-  </script>
-
-  <h2 style="font-size: 1.5rem; font-weight: bold; margin-top: 2.5rem;">📋 Informations du bien</h2>
-  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-    <p>📐 Surface : <strong><?php echo esc_html($surface); ?> m²</strong></p>
-    <p>🛏️ Chambres : <strong><?php echo esc_html($nb_chambres); ?></strong></p>
-    <p>🛋️ Pièces : <strong><?php echo esc_html($nb_pieces); ?></strong></p>
-    <p>🏢 Étage : <strong><?php echo esc_html($etage); ?></strong></p>
-    <p>🏷️ Type : <strong><?php echo esc_html($type_bien); ?></strong></p>
-    <p>🏗️ Année : <strong><?php echo esc_html($annee); ?></strong></p>
-    <p>🔥 Chauffage : <strong><?php echo esc_html("$chauffage ($mode_chauffage)"); ?></strong></p>
-    <p>🌍 Terrain : <strong><?php echo esc_html($terrain); ?> m²</strong></p>
-    <p>📐 Carrez : <strong><?php echo esc_html($carrez); ?> m²</strong></p>
-    <p>📜 Mandat : <strong><?php echo esc_html($mandat); ?></strong> — <em><?php echo esc_html($statut); ?></em></p>
-  </div>
-
-
-  <?php
-$options = get_post_meta($post_id, 'options', true);
-
-if (!empty($options) && trim($options) !== ''):
-  $options_array = explode(',', $options);
-?>
-  <h3 style="margin-top: 2rem; font-weight: 600;">⚙️ Options & Caractéristiques</h3>
-  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem;">
-    <?php foreach ($options_array as $opt): ?>
-      <span style="background: #ffe6cc; padding: 0.4rem 0.8rem; border-radius: 9999px; font-size: 0.9rem; color: #444;">
-        <?php echo esc_html(trim($opt)); ?>
-      </span>
-    <?php endforeach; ?>
-  </div>
-<?php endif; ?>
-
-<?php
-// Fonctions d’attribution des lettres
+// Fonctions d'attribution des lettres
 function getDpeLetter($val) {
   if (!is_numeric($val)) return null;
   if ($val <= 50) return 'A';
@@ -182,13 +76,8 @@ function getGesLetter($val) {
   return 'G';
 }
 
-// Récupération des données
-$dpe_conso = get_post_meta($post_id, 'dpe_conso_indice', true);
 $dpe_letter = strtoupper(trim(get_post_meta($post_id, 'dpe', true)));
-$dpe_ges = get_post_meta($post_id, 'dpe_ges_indice', true);
 $ges_letter = getGesLetter($dpe_ges);
-$dpe_conso_val = get_post_meta($post_id, 'dpe_conso_indice', true);
-$ges_val = get_post_meta($post_id, 'dpe_ges_indice', true);
 
 // Palettes officielles
 $dpe_classes = [
@@ -211,119 +100,270 @@ $ges_classes = [
 ];
 ?>
 
-<style>
-.dpe-ges-container {
-  display: flex;
-  gap: 2rem;
-  margin-top: 2.5rem;
-  flex-wrap: wrap;
-}
-.dpe-scale, .ges-scale {
-  flex: 1 1 300px;
-}
-.dpe-bar, .ges-bar {
-  position: relative;
-  height: 22px;
-  line-height: 22px;
-  font-weight: bold;
-  color: white;
-  padding-left: 10px;
-  margin-bottom: 6px;
-  border-radius: 4px;
-}
-.dpe-bar span, .ges-bar span {
-  position: absolute;
-  right: 10px;
-}
-.dpe-selected::after, .ges-selected::after {
-  content: '';
-  position: absolute;
-  right: -12px;
-  top: 8px;
-  width: 0;
-  height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 12px solid black;
-}
-</style>
+<div class="container" style="max-width: 1200px; margin: auto; padding: 3rem 1rem;">
+  
+  <!-- Header du bien avec style Apple -->
+  <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem; text-align: center;">
+    <h1 class="text-display" style="margin-bottom: 1rem; color: var(--primary);">🏡 <?php echo esc_html($titre); ?></h1>
+    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 2rem; font-size: 1.1rem; color: var(--gray-600);">
+      <span>📐 <?php echo esc_html($surface); ?> m²</span>
+      <span>💰 <?php echo number_format((float)$prix, 0, ',', ' '); ?> €</span>
+      <span>📍 <?php echo esc_html("$ville $code_postal"); ?></span>
+    </div>
+  </div>
 
-<div class="dpe-ges-container">
-  <div class="dpe-scale">
-    <h3>🔋 Consommation énergétique</h3>
-    <?php foreach ($dpe_classes as $letter => $info): ?>
-      <div class="dpe-bar <?php echo ($letter === $dpe_letter ? 'dpe-selected' : ''); ?>"
-           style="background-color: <?php echo $info['bg']; ?>;">
-        <?php echo $letter . " — " . $info['text']; ?>
-        <span>
-          <?php if ($letter === $dpe_letter && !empty($dpe_conso_val)) {
-            echo esc_html($dpe_conso) . " kWhEP/m².an";
-          } ?>
-        </span>
+  <!-- Galerie photos moderne avec Swiper -->
+  <div class="glass-card" style="padding: 0; margin-bottom: 2rem; overflow: hidden;">
+    <div class="swiper" style="border-radius: var(--radius-lg);">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img src="<?php echo esc_url($cover_url); ?>" 
+               style="width: 100%; height: 500px; object-fit: cover;" 
+               onerror="this.src='<?php echo get_template_directory_uri(); ?>/assets/no-photo.png'" />
+        </div>
+        <?php if ($gallery && is_array($gallery)) : ?>
+          <?php foreach ($gallery as $image): ?>
+            <div class="swiper-slide">
+              <img src="https://fkavtsofmglifzalclyn.supabase.co/storage/v1/object/public/photos/gallery/<?php echo esc_attr($supabase_id); ?>/<?php echo esc_attr($image); ?>" 
+                   style="width: 100%; height: 500px; object-fit: cover;" 
+                   onerror="this.src='<?php echo get_template_directory_uri(); ?>/assets/no-photo.png'" />
+            </div>
+          <?php endforeach; ?>
+        <?php endif; ?>
       </div>
-    <?php endforeach; ?>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
   </div>
 
-  <div class="ges-scale">
-    <h3>🌫️ Émissions GES</h3>
-    <?php foreach ($ges_classes as $letter => $info): ?>
-      <div class="ges-bar <?php echo ($letter === $ges_letter ? 'ges-selected' : ''); ?>"
-           style="background-color: <?php echo $info['bg']; ?>;">
-        <?php echo $letter . " — " . $info['text']; ?>
-        <span>
-          <?php if ($letter === $ges_letter && !empty($ges_val)) {
-            echo esc_html($ges_val) . " kgCO₂/m².an";
-          } ?>
-        </span>
+  <!-- Grid layout pour informations -->
+  <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem;">
+    
+    <!-- Informations principales -->
+    <div class="glass-card" style="padding: 2rem;">
+      <h2 class="text-title-1" style="margin-bottom: 1.5rem; color: var(--primary);">📋 Caractéristiques</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">📐</span>
+          <div>
+            <div style="font-weight: 600;">Surface habitable</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($surface); ?> m²</div>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🛏️</span>
+          <div>
+            <div style="font-weight: 600;">Chambres</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($nb_chambres); ?></div>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🛋️</span>
+          <div>
+            <div style="font-weight: 600;">Pièces</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($nb_pieces); ?></div>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🏢</span>
+          <div>
+            <div style="font-weight: 600;">Étage</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($etage); ?></div>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🏷️</span>
+          <div>
+            <div style="font-weight: 600;">Type de bien</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($type_bien); ?></div>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🏗️</span>
+          <div>
+            <div style="font-weight: 600;">Année</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($annee); ?></div>
+          </div>
+        </div>
+        
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🔥</span>
+          <div>
+            <div style="font-weight: 600;">Chauffage</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html("$chauffage ($mode_chauffage)"); ?></div>
+          </div>
+        </div>
+        
+        <?php if ($terrain): ?>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span style="font-size: 1.2rem;">🌍</span>
+          <div>
+            <div style="font-weight: 600;">Terrain</div>
+            <div style="color: var(--gray-600);"><?php echo esc_html($terrain); ?> m²</div>
+          </div>
+        </div>
+        <?php endif; ?>
       </div>
-    <?php endforeach; ?>
+
+      <!-- Options et équipements -->
+      <?php if (!empty($options) && trim($options) !== ''): ?>
+        <div style="margin-top: 2rem;">
+          <h3 style="font-weight: 600; margin-bottom: 1rem;">⚙️ Options & Équipements</h3>
+          <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <?php 
+            $options_array = explode(',', $options);
+            foreach ($options_array as $opt): 
+            ?>
+              <span style="background: rgba(249, 115, 22, 0.1); padding: 0.4rem 0.8rem; border-radius: var(--radius-full); font-size: 0.9rem; color: var(--primary); border: 1px solid rgba(249, 115, 22, 0.2);">
+                <?php echo esc_html(trim($opt)); ?>
+              </span>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      <?php endif; ?>
+    </div>
+
+    <!-- Sidebar avec prix et agent -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+      
+      <!-- Prix -->
+      <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+        <h3 style="color: var(--primary); font-size: 1.3rem; margin-bottom: 1rem;">💰 Informations financières</h3>
+        <div style="font-size: 2rem; font-weight: 700; color: var(--primary); margin-bottom: 1rem;">
+          <?php echo number_format((float)$prix, 0, ',', ' '); ?> €
+        </div>
+        <div style="font-size: 0.9rem; color: var(--gray-600); line-height: 1.6;">
+          <div>Prix net vendeur : <strong><?php echo number_format((float)$net_vendeur, 0, ',', ' '); ?> €</strong></div>
+          <div>Honoraires : <strong><?php echo number_format((float)$honoraires, 0, ',', ' '); ?> € (<?php echo $pourcentage; ?>%)</strong></div>
+          <?php if ($fonciere): ?>
+            <div style="margin-top: 0.5rem;">Taxe foncière : <?php echo $fonciere; ?> €</div>
+          <?php endif; ?>
+          <?php if ($charges): ?>
+            <div>Charges annuelles : <?php echo $charges; ?> €</div>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <!-- Agent -->
+      <?php if ($agent_post): ?>
+      <div class="glass-card" style="padding: 1.5rem;">
+        <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 1rem;">👤 Votre contact</h3>
+        <div style="text-align: center;">
+          <div style="font-weight: 600; margin-bottom: 0.5rem;"><?php echo esc_html($agent_post->post_title); ?></div>
+          <div style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
+            <?php echo esc_html(get_post_meta($agent_post->ID, 'ville', true)); ?><br>
+            <?php echo esc_html(get_post_meta($agent_post->ID, 'telephone', true)); ?>
+          </div>
+          <a href="mailto:<?php echo esc_attr(get_post_meta($agent_post->ID, 'email', true)); ?>" 
+             class="btn-primary" 
+             style="font-size: 0.9rem; padding: 0.75rem 1.5rem;">
+            ✉ Contacter
+          </a>
+        </div>
+      </div>
+      <?php endif; ?>
+
+      <!-- Statut -->
+      <div class="glass-card" style="padding: 1.5rem; text-align: center;">
+        <div style="font-size: 0.9rem; color: var(--gray-600);">
+          <div>Mandat : <strong><?php echo esc_html($mandat); ?></strong></div>
+          <div>Statut : <strong style="color: var(--primary);"><?php echo esc_html($statut); ?></strong></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 
-
-  <div style="margin-top: 2.5rem; background: #fffaf0; padding: 1rem 1.5rem; border-radius: 10px; box-shadow: 0 0 6px rgba(0,0,0,0.05);">
-    <h3 style="font-size: 1.3rem; font-weight: 600; margin-bottom: 1rem;">💰 Informations financières</h3>
-    <ul style="font-size: 0.95rem; color: #444; line-height: 1.6;">
-      <li><strong>Prix net vendeur :</strong> <?php echo number_format((float)$net_vendeur, 0, ',', ' '); ?> €</li>
-      <li><strong>Honoraires :</strong> <?php echo number_format((float)$honoraires, 0, ',', ' '); ?> € (<?php echo $pourcentage; ?> %)</li>
-      <li><strong>Prix total :</strong> <?php echo number_format((float)$prix, 0, ',', ' '); ?> €</li>
-      <li><strong>Taxe foncière :</strong> <?php echo $fonciere ?: '—'; ?> €</li>
-      <li><strong>Charges annuelles :</strong> <?php echo $charges ?: '—'; ?> €</li>
-      <li><strong>Fonds travaux :</strong> <?php echo $travaux ?: '—'; ?> €</li>
-    </ul>
-  </div>
-
+  <!-- Description -->
   <?php if (!empty($description)): ?>
-  <div style="margin-top: 2.5rem;">
-    <h3 style="font-size: 1.3rem; font-weight: 600;">📝 Description</h3>
-    <div style="font-size: 0.95rem; color: #444; margin-top: 0.5rem;">
+  <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+    <h2 class="text-title-1" style="margin-bottom: 1rem; color: var(--primary);">📝 Description</h2>
+    <div style="line-height: 1.7; color: var(--gray-700);">
       <?php echo $description; ?>
-      <p style="margin-top: 0.5rem; font-size: 0.85rem;">
-        🔍 Infos risques : <a href="https://www.georisques.gouv.fr" class="text-blue-600 underline" target="_blank">Géorisques</a>
-      </p>
+    </div>
+    <div style="margin-top: 1rem; font-size: 0.9rem; color: var(--gray-500);">
+      🔍 Informations sur les risques : <a href="https://www.georisques.gouv.fr" target="_blank" style="color: var(--primary);">Géorisques</a>
     </div>
   </div>
-<?php endif; ?>
+  <?php endif; ?>
 
+  <!-- DPE et GES -->
+  <div class="glass-card" style="padding: 2rem; margin-bottom: 2rem;">
+    <h2 class="text-title-1" style="margin-bottom: 2rem; color: var(--primary);">⚡ Diagnostic de Performance Énergétique</h2>
+    
+    <div class="dpe-ges-container">
+      <div class="dpe-scale">
+        <h3 style="margin-bottom: 1rem;">🔋 Consommation énergétique</h3>
+        <?php foreach ($dpe_classes as $letter => $info): ?>
+          <div class="dpe-bar <?php echo ($letter === $dpe_letter ? 'dpe-selected' : ''); ?>"
+               style="background-color: <?php echo $info['bg']; ?>;">
+            <?php echo $letter . " — " . $info['text']; ?>
+            <span>
+              <?php if ($letter === $dpe_letter && !empty($dpe_conso)) {
+                echo esc_html($dpe_conso) . " kWhEP/m².an";
+              } ?>
+            </span>
+          </div>
+        <?php endforeach; ?>
+      </div>
 
-  <?php if ($agent_post): ?>
-  <div style="margin-top: 3rem;">
-    <h3 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">👤 Mandataire en charge</h3>
-    <div style="display: flex; align-items: center; gap: 1rem;">
-      <?php echo get_the_post_thumbnail($agent_post->ID, 'thumbnail', ['style' => 'border-radius: 50%; width: 70px; height: 70px; object-fit: cover;']); ?>
-      <div>
-        <p style="margin: 0; font-weight: bold; font-size: 1.1rem;"><?php echo esc_html($agent_post->post_title); ?></p>
-        <p style="margin: 0; font-size: 0.95rem; color: #666;">
-          <?php echo esc_html(get_post_meta($agent_post->ID, 'ville', true)); ?> - <?php echo esc_html(get_post_meta($agent_post->ID, 'telephone', true)); ?>
-        </p>
-        <a href="mailto:<?php echo esc_attr(get_post_meta($agent_post->ID, 'email', true)); ?>" style="display: inline-block; margin-top: 0.5rem; padding: 0.5rem 1rem; background: #f97316; color: white; text-decoration: none; border-radius: 8px; font-weight: 500;">
-          ✉ Contacter le mandataire
-        </a>
+      <div class="ges-scale">
+        <h3 style="margin-bottom: 1rem;">🌫️ Émissions de gaz à effet de serre</h3>
+        <?php foreach ($ges_classes as $letter => $info): ?>
+          <div class="ges-bar <?php echo ($letter === $ges_letter ? 'ges-selected' : ''); ?>"
+               style="background-color: <?php echo $info['bg']; ?>;">
+            <?php echo $letter . " — " . $info['text']; ?>
+            <span>
+              <?php if ($letter === $ges_letter && !empty($dpe_ges)) {
+                echo esc_html($dpe_ges) . " kgCO₂/m².an";
+              } ?>
+            </span>
+          </div>
+        <?php endforeach; ?>
       </div>
     </div>
-  </div>
-<?php endif; ?>
 
+    <?php if ($dpe_min && $dpe_max): ?>
+    <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(249, 115, 22, 0.05); border-radius: var(--radius-md); border: 1px solid rgba(249, 115, 22, 0.1);">
+      <strong>💡 Estimation des coûts énergétiques annuels :</strong> 
+      Entre <?php echo number_format($dpe_min, 0, ',', ' '); ?> € et <?php echo number_format($dpe_max, 0, ',', ' '); ?> €
+    </div>
+    <?php endif; ?>
+  </div>
+
+  <!-- Bouton retour -->
+  <div style="text-align: center; margin-top: 3rem;">
+    <a href="<?php echo site_url('/biens'); ?>" class="btn-secondary">
+      ← Retour aux annonces
+    </a>
+  </div>
 </div>
+
+<!-- Swiper CSS/JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<script>
+  new Swiper('.swiper', {
+    loop: true,
+    pagination: { 
+      el: '.swiper-pagination', 
+      clickable: true 
+    },
+    navigation: { 
+      nextEl: '.swiper-button-next', 
+      prevEl: '.swiper-button-prev' 
+    },
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+    }
+  });
+</script>
 
 <?php get_footer(); ?>
